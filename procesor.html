@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8086</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 2%;
+            background-color: lightgrey;
+        }
+        #all{
+            margin: 0 auto;
+            padding: 0;
+            font-weight: bold;
+            background-color: lightseagreen;
+            width: 1000px;
+            text-align: center;
+        }
+        #gora{
+            margin: 0 auto;
+            padding: 0;
+            width: 1000px;
+            height: fit-content;
+            overflow: auto;
+        }
+        #dol{
+            overflow: auto;
+        }
+        #inputs{
+            margin: 0 auto;
+            padding: 0;
+            width: 750px;
+            float: left;
+        }
+        h1{
+            margin: 0 auto;
+            padding: 25px;
+            width: 900px;
+            text-align: center;
+        }
+        .abcd{
+            margin: 0 auto;
+            padding: 1%;
+            width: 100%;
+            float: left;
+            clear: both;
+            font-size: 150%;
+            background-color: lightseagreen;
+        }
+        #buttons{
+            margin: 0 auto;
+            padding: 1%;
+            float: left;
+            width: 23%;
+            background-color: lightseagreen;
+            height: 100%;
+        }
+        #rejestry1{
+            margin: 0 auto;
+            padding: 1%;
+            float: left;
+            width: 32%;
+            font-size: 150%;
+            background-color: lightseagreen;
+        }
+        #rejestry2{
+            margin: 0 auto;
+            margin-right: 5%;
+            padding: 1%;
+            float: left;
+            width: 25%;
+            font-size: 150%;
+            background-color: lightseagreen;
+        }
+        #rejestry3{
+            margin: 0 auto;
+            margin-right: 5%;
+            padding: 1%;
+            float: left;
+            width: 25%;
+            font-size: 150%;
+            background-color: lightseagreen;
+        }
+        .radio_box{
+            margin: 0 auto;
+            display: inline-block;
+            width: 70px;
+        }
+        input[type=text]{
+            margin: 1%;
+            margin-right: 5%;
+            width: 10%;
+            padding: 1%;
+            text-align: center;
+            font-size: 150%;
+            text-transform: uppercase;
+            
+        }
+        input[type=button]{
+            margin: 0 auto;
+            margin-top: 4%;
+            margin-left: 0;
+            float: left;
+            font-size: 32px;
+            font-weight: bold;
+            width: 200px;
+            height: 50px;
+        }
+        input[type=radio]{
+            margin-top: 1px;;
+        }
+        .radio_label{
+            float: left;
+            clear: both;
+            margin: 1px;
+            margin-bottom: 0;
+            margin-left: 15%;
+        }
+        .radio_label2{
+            width: 100%;
+        }
+        h3{
+            margin: 0 auto;
+            display: inline-block;
+            text-align: center;
+            padding: 0;
+            font-weight: bold;
+            font-size: 28px;
+        }
+
+    </style>
+
+    <script>
+        characters = ["1","2","3","4","5","6","7","8","9","0","A","B","C","D","E","F"]
+
+        function writing(x){
+
+            if(x.id[1] == "h"){//wybór miejsca do pisania (h/l)
+                var choose = document.getElementById(x.id[0]+"xh");
+            }
+            else{
+                var choose = document.getElementById(x.id[0]+"xl");
+            }
+
+            if(x.value.length == 0){//dopełnianie zawartości
+                var value = "00"
+            }
+            else if(x.value.length == 1){
+                var value = "0" + x.value;
+            }
+            else{
+                var value = x.value;
+            }
+
+            value = value.toUpperCase()
+
+            if(characters.includes(value[0]) && characters.includes(value[1])){//sprawdzanie poprawności znaku
+                choose.value = value;
+            }
+            else{
+                alert("Niepoprawne dane! Tylko liczby szesnastkowe.")
+            }
+
+        }
+
+        function mov_xchg(operation){
+            var radios = document.getElementsByName("first");
+            var radios2 = document.getElementsByName("second");
+
+            //znajdowanie zaznaczonego radiobuttona
+            for(let i = 0; i < radios.length; i++){
+                if (radios[i].checked){
+                    var to = radios[i].value;
+                }
+            }
+
+            for(let i = 0; i < radios2.length; i++){
+                if (radios2[i].checked){
+                    var from = radios2[i].value;
+                }
+            }
+
+            if(to == null || from == null){
+                alert("Nie zaznaczono rejestrów!");
+                return;
+            }
+            else if(from.length == 1 && to.length == 1){//rejestry 16 bitowe
+                var high_from = document.getElementById(from + "xh")
+                var low_from = document.getElementById(from + "xl")
+
+                var high_to = document.getElementById(to + "xh")
+                var low_to = document.getElementById(to + "xl")
+
+                if(operation == "m"){//move
+                    high_to.value = high_from.value;
+                    low_to.value = low_from.value;
+
+                    high_to = document.getElementById(to + "h")
+                    low_to = document.getElementById(to + "l")
+
+                    high_to.value = high_from.value;
+                    low_to.value = low_from.value;
+                }
+                else if(operation == "x"){//xchg
+                    var xchg_high_to = high_to.value;
+                    var xchg_low_to = low_to.value;
+                    var xchg_high_from = high_from.value;
+                    var xchg_low_from = low_from.value;
+
+                    high_to.value = xchg_high_from;
+                    low_to.value = xchg_low_from;
+                    high_from.value = xchg_high_to;
+                    low_from.value = xchg_low_to;
+
+                    high_to = document.getElementById(to + "h");
+                    high_from = document.getElementById(from + "h");
+                    low_to = document.getElementById(to + "l");
+                    low_from = document.getElementById(from + "l");
+
+                    high_to.value = xchg_high_from;
+                    low_to.value = xchg_low_from;
+                    high_from.value = xchg_high_to;
+                    low_from.value = xchg_low_to;
+                }
+            }
+            else if(from.length == 2 && to.length == 2){//rejestry 8 bitowe
+                var hl_from = document.getElementById(from[0] + "x" + from[1])
+                var hl_to = document.getElementById(to[0] + "x" + to[1])
+
+                if(operation == "m"){//move
+                    hl_to.value = hl_from.value;
+                    hl_to = document.getElementById(to)
+                    hl_to.value = hl_from.value;
+                }
+                else if(operation == "x"){//xchg
+                    var xchg_hl_from = hl_from.value;
+                    var xchg_hl_to = hl_to.value;
+
+                    hl_to.value = xchg_hl_from;
+                    hl_from.value = xchg_hl_to;
+
+                    hl_to = document.getElementById(to)
+                    hl_from = document.getElementById(from)
+
+                    hl_to.value = xchg_hl_from;
+                    hl_from.value = xchg_hl_to;
+                }
+
+            }
+            else{
+                alert("Niepoprawnie zaznaczone rejestry!")
+                return;
+            }
+        }
+
+        function reset(){
+            location.reload();
+        }
+
+        function random(){
+            var textbox = document.getElementsByClassName("textbox");
+            for(let i = 0; i < textbox.length; i+=4){//skaczemy wierszami
+                var random = characters[Math.floor(Math.random() * 16)];//losowo generowane numery z tablicy znaków
+                var random2 = characters[Math.floor(Math.random() * 16)];
+                textbox[i].value = random + random2;
+                textbox[i + 2].value = random + random2;
+
+                random = characters[Math.floor(Math.random() * 16)];
+                random2 = characters[Math.floor(Math.random() * 16)];
+                textbox[i + 1].value = random + random2;
+                textbox[i + 3].value = random + random2;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="all">
+        <h1>SYMULATOR ROZKAZÓW PROCESORA INTEL 8086</h1>
+        <div id="gora">
+            <div id="inputs">
+                <div class="abcd">
+                    <label>AX<input type="text" id="axh" value="00" class="textbox" style="width: 7%; margin-right: 0;" disabled>
+                        <input type="text" id="axl" value="00" class="textbox" style="width: 7%; margin-left: 0;" disabled></label>
+                    <label>AH<input type="text" id="ah" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                    <label>AL<input type="text" id="al" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                </div>
+                <div class="abcd">
+                    <label>BX<input type="text" id="bxh" value="00" class="textbox" style="width: 7%; margin-right: 0;" disabled>
+                        <input type="text" id="bxl" value="00" class="textbox" style="width: 7%; margin-left: 0;" disabled></label>
+                    <label>BH<input type="text" id="bh" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                    <label>BL<input type="text" id="bl" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                </div>
+                <div class="abcd">
+                    <label>CX<input type="text" id="cxh" value="00" class="textbox" style="width: 7%; margin-right: 0;" disabled>
+                        <input type="text" id="cxl" value="00" class="textbox" style="width: 7%; margin-left: 0;" disabled></label>
+                    <label>CH<input type="text" id="ch" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                    <label>CL<input type="text" id="cl" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                </div>
+                <div class="abcd">
+                    <label>DX<input type="text" id="dxh" value="00" class="textbox" style="width: 7%; margin-right: 0;" disabled>
+                        <input type="text" id="dxl" value="00" class="textbox" style="width: 7%; margin-left: 0;" disabled></label>
+                    <label>DH<input type="text" id="dh" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                    <label>DL<input type="text" id="dl" class="textbox" oninput="writing(this)" maxlength="2"></label>
+                </div>
+    
+            </div>
+            <div id="buttons">
+                <input type="button" onclick="mov_xchg('m')" value="MOV">
+                <input type="button" onclick="mov_xchg('x')" value="XCHG">
+                <input type="button" onclick="reset()" value="RESET">
+                <input type="button" onclick="random()" value="RANDOM">
+
+            </div>
+        </div>
+
+        <div id="dol">
+            <h3 style="width: 150px;">Pierwszy<br> rejestr<br></h3>
+            <h3 style="width: 100px;">Drugi<br> rejestr<br></h3>
+            <h3 style="width: 350px;">Pierwszy<br> rejestr<br></h3>
+            <h3 style="width: 300px;">Drugi<br> rejestr<br></h3>
+            <form>
+                <div id="rejestry1">
+                    <div class="radio_box" style="margin-right: 15%;">
+                        <label class="radio_label"><input type="radio" name="first" value="a">AX</label>
+                        <label class="radio_label"><input type="radio" name="first" value="b">BX</label>
+                        <label class="radio_label"><input type="radio" name="first" value="c">CX</label>
+                        <label class="radio_label"><input type="radio" name="first" value="d">DX</label>
+                    </div>
+                        
+                    <div class="radio_box">
+                        <label class="radio_label"><input type="radio" name="second" value="a">AX</label>
+                        <label class="radio_label"><input type="radio" name="second" value="b">BX</label>
+                        <label class="radio_label"><input type="radio" name="second" value="c">CX</label>
+                        <label class="radio_label"><input type="radio" name="second" value="d">DX</label>
+                    </div>
+                </div>
+
+                <div id="rejestry2">
+                    <div class="radio_box">
+                        <label class="radio_label2"><input type="radio" name="first" value="ah">AH</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="bh">BH</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="ch">CH</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="dh">DH</label>
+                    </div>
+
+                    <div class="radio_box">
+                        <label class="radio_label2"><input type="radio" name="first" value="al">AL</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="bl">BL</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="cl">CL</label>
+                        <label class="radio_label2"><input type="radio" name="first" value="dl">DL</label>
+                    </div>
+                </div>
+                <div id="rejestry3">
+                    <div class="radio_box">
+                        <label class="radio_label2"><input type="radio" name="second" value="ah">AH</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="bh">BH</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="ch">CH</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="dh">DH</label>
+                    </div>
+                    <div class="radio_box">
+                        <label class="radio_label2"><input type="radio" name="second" value="al">AL</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="bl">BL</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="cl">CL</label>
+                        <label class="radio_label2"><input type="radio" name="second" value="dl">DL</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
